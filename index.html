@@ -22,14 +22,15 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <h3 class="modal-title" id="exampleModalLabel"></h3> <br> <br>
+                        <h5 class="modal-title" id="exampleModalLabel">Payment status :: {{paymentStatus}}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form method="post" @submit.prevent='lipaNaMpesa'>
                         <div class="modal-body">
                             <div class="mb-3">
                                 <label for="exampleFormControlInput1" class="form-label">Phone number</label>
-                                <input type="number" class="form-control" id="exampleFormControlInput1"
+                                <input type="tel" class="form-control" id="exampleFormControlInput1"
                                     v-model="phoneNumber" />
                             </div>
                             <div class="mb-3">
@@ -68,6 +69,9 @@
                 response: "",
                 success: "",
                 activeClass: "active",
+                merchant: '',
+                checkout:'',
+                paymentStatus:'...'
             },
             methods: {
 
@@ -79,7 +83,7 @@
                             amount: this.amount,
                         })
 
-                        .then((res) => { console.log('THIS IS MY MPESA RESPONSE', res) })
+                        .then((res) => { console.log('THIS IS MY MPESA RESPONSE', res.data) })
                         .catch((err) => { console.log("THIS IS MY MPESA ERROR RESPONSE", err); })
                 },
             },
