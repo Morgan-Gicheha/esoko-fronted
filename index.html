@@ -23,7 +23,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h3 class="modal-title" id="exampleModalLabel"></h3> <br> <br>
-                        <h5 class="modal-title" id="exampleModalLabel">Payment status :: {{paymentStatus}}</h5>
+                        <h5 class="modal-title" id="exampleModalLabel" >Payment status :: {{paymentStatus}}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form method="post" @submit.prevent='lipaNaMpesa'>
@@ -83,7 +83,7 @@
                             amount: this.amount,
                         })
 
-                        .then((res) => { console.log('THIS IS MY MPESA RESPONSE', res.data) })
+                        .then((res) => { merchant = res.data['MerchantRequestID'],checkout = res.data['CheckoutRequestID'],this.paymentStatus = res.data['CustomerMessage'], console.log(paymentStatus) })
                         .catch((err) => { console.log("THIS IS MY MPESA ERROR RESPONSE", err); })
                 },
             },
