@@ -23,7 +23,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h3 class="modal-title" id="exampleModalLabel"></h3> <br> <br>
-                        <h5 class="modal-title" id="exampleModalLabel" >Payment status :: {{paymentStatus}}</h5>
+                        <h5 class="modal-title" id="exampleModalLabel">Payment status :: {{paymentStatus}}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <form method="post" @submit.prevent='lipaNaMpesa'>
@@ -70,8 +70,8 @@
                 success: "",
                 activeClass: "active",
                 merchant: '',
-                checkout:'',
-                paymentStatus:'...'
+                checkout: '',
+                paymentStatus: '...'
             },
             methods: {
 
@@ -83,24 +83,51 @@
                             amount: this.amount,
                         })
 
-                        .then((res) => { merchant = res.data['MerchantRequestID'],checkout = res.data['CheckoutRequestID'],this.paymentStatus = res.data['CustomerMessage'], console.log(paymentStatus) })
+                        .then(
+                            (res) => {
+                                alert(),
+                                this.merchant = res.data['MerchantRequestID'],
+                                this.checkout = res.data['CheckoutRequestID'],
+                                this.paymentStatus = res.data['CustomerMessage']
+                                this.checkMpesaStatusCode()
+                            }
+                        )
                         .catch((err) => { console.log("THIS IS MY MPESA ERROR RESPONSE", err); })
+                        .finally()
+
                 },
+                checkMpesaStatusCode() {
+
+                    intervalset = setInterval(axios.post("http://127.0.0.1:5000/stkpush/processor", {
+                                MerchantRequestID: this.merchant,
+                                CheckoutRequestID: this.checkout,
+                            },5000)
+                            .then((res) => {
+                                // alert('recieved response from processor')
+                                this.paymentStatus = res.ResultDesc
+                                console.log(res)
+                                // clearInterval(refreshInterval)
+
+                            })
+                            .catch((err) => { console.log(' ERROR IN checkMpesaStatusCode', err) }), 5000)
+
+
+                }
             },
 
-            mounted() {
-                axios
-                    .get("http://127.0.0.1:5000/json/forex")
-                    .then((response) => {
-                        this.mss = response.data[0]["Weekly Time Series"];
-                        console.log(response.data[0]["Weekly Time Series"]["2021-12-10"]);
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                        this.errored = error;
-                    })
-                    .finally(() => (this.loading = false));
-            },
+            // mounted() {
+            //     axios
+            //         .get("http://127.0.0.1:5000/json/forex")
+            //         .then((response) => {
+            //             this.mss = response.data[0]["Weekly Time Series"];
+            //             console.log(response.data[0]["Weekly Time Series"]["2021-12-10"]);
+            //         })
+            //         .catch((error) => {
+            //             console.log(error);
+            //             this.errored = error;
+            //         })
+            //         .finally(() => (this.loading = false));
+            // },
 
 
         });
@@ -109,3 +136,7 @@
 </body>
 
 </html>
+<!-- 
+.then((res) => { alert(), refreshInterval = setInterval(this.checkMpesaStatusCode, 5000), this.merchant = res.data['MerchantRequestID'], this.checkout = res.data['CheckoutRequestID'], this.paymentStatus = res.data['CustomerMessage'] })
+.catch((err) => { console.log("THIS IS MY MPESA ERROR RESPONSE", err);  })
+.finally() -->
